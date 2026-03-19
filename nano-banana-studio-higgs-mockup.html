@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nano Banana Studio — Higgs Field Design Mockup</title>
+  <style>
+    /* ── Reset & Root ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Higgs field quantum palette */
+      --void: #0a0a12;
+      --deep-space: #0d0f1a;
+      --nebula: #121428;
+      --field-blue: #1a1d3a;
+      --quantum-purple: #2d1b69;
+      --higgs-violet: #7c3aed;
+      --boson-blue: #3b82f6;
+      --collision-cyan: #06b6d4;
+      --energy-teal: #14b8a6;
+      --particle-gold: #f59e0b;
+      --decay-pink: #ec4899;
+      --glow-white: #e8e4f0;
+      --field-text: #c4bdd4;
+      --muted-text: #8b82a0;
+      --glass-bg: rgba(18, 20, 40, 0.6);
+      --glass-border: rgba(124, 58, 237, 0.15);
+      --glass-hover: rgba(124, 58, 237, 0.25);
+      --card-bg: rgba(13, 15, 26, 0.75);
+
+      /* Banana accent — keeping brand identity */
+      --banana: #f59e0b;
+      --banana-glow: rgba(245, 158, 11, 0.3);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, sans-serif;
+      background: var(--void);
+      color: var(--glow-white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Particle Canvas Background ────────────────────── */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Field Energy Gradient Overlay ─────────────────── */
+    .field-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 90%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 40%);
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 60px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10, 10, 18, 0.85);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.12);
+      box-shadow: 0 1px 20px rgba(124, 58, 237, 0.08);
+    }
+
+    .header-logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--glow-white);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .header-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      position: relative;
+      background: linear-gradient(135deg, var(--banana) 0%, #d97706 100%);
+      box-shadow:
+        0 0 12px var(--banana-glow),
+        0 0 24px rgba(245, 158, 11, 0.15);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 0 12px var(--banana-glow), 0 0 24px rgba(245, 158, 11, 0.15); }
+      50% { box-shadow: 0 0 16px var(--banana-glow), 0 0 32px rgba(245, 158, 11, 0.25); }
+    }
+
+    .header-spacer { flex: 1; }
+
+    /* API key pill */
+    .api-key-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted-text);
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .api-key-pill:hover {
+      background: var(--glass-hover);
+      border-color: rgba(124, 58, 237, 0.3);
+      color: var(--glow-white);
+    }
+
+    .api-key-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted-text);
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .api-key-dot.active {
+      background: var(--energy-teal);
+      box-shadow: 0 0 8px rgba(20, 184, 166, 0.5);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(20, 184, 166, 0.5); }
+      50% { box-shadow: 0 0 14px rgba(20, 184, 166, 0.8); }
+    }
+
+    /* Global model toggle */
+    .model-seg {
+      display: flex;
+      background: rgba(45, 27, 105, 0.3);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      border-radius: 9px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .model-seg-btn {
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 7px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: var(--muted-text);
+    }
+
+    .model-seg-btn:hover:not(.active) {
+      color: var(--field-text);
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .model-seg-btn.active {
+      background: linear-gradient(135deg, var(--higgs-violet), #6d28d9);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+    }
+
+    /* ── API Key Banner ──────────────────────────────────── */
+    .api-banner {
+      background: rgba(45, 27, 105, 0.2);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.12);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 10;
+    }
+
+    .api-banner.hidden { display: none; }
+
+    .api-banner-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--higgs-violet);
+    }
+
+    .api-input {
+      flex: 1;
+      min-width: 200px;
+      max-width: 420px;
+      height: 34px;
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      border-radius: 8px;
+      padding: 0 11px;
+      font-size: 13px;
+      font-family: 'Menlo', 'Courier New', monospace;
+      background: rgba(13, 15, 26, 0.8);
+      color: var(--glow-white);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .api-input:focus {
+      border-color: var(--higgs-violet);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15), 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+
+    .api-input::placeholder { color: var(--muted-text); }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--higgs-violet), var(--boson-blue));
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(124, 58, 237, 0.25);
+    }
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+
+    .btn-banana {
+      background: linear-gradient(135deg, var(--banana), #d97706);
+      color: #fff;
+      box-shadow: 0 2px 10px var(--banana-glow);
+    }
+    .btn-banana:hover:not(:disabled) {
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+      transform: translateY(-1px);
+    }
+    .btn-banana:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+
+    .btn-generate-all {
+      background: linear-gradient(135deg, var(--higgs-violet), var(--collision-cyan));
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(124, 58, 237, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-generate-all::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+    .btn-generate-all:hover:not(:disabled)::before { left: 100%; }
+    .btn-generate-all:hover:not(:disabled) {
+      box-shadow: 0 4px 24px rgba(124, 58, 237, 0.45);
+      transform: translateY(-1px);
+    }
+    .btn-generate-all:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--muted-text);
+      border: 1px solid var(--glass-border);
+    }
+    .btn-outline:hover {
+      background: rgba(124, 58, 237, 0.1);
+      border-color: rgba(124, 58, 237, 0.3);
+      color: var(--glow-white);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted-text);
+      border: none;
+    }
+    .btn-ghost:hover { background: rgba(124, 58, 237, 0.1); color: var(--glow-white); }
+
+    .btn-sm {
+      height: 28px;
+      padding: 0 10px;
+      font-size: 12px;
+      border-radius: 7px;
+    }
+
+    /* ── Main Content ─────────────────────────────────────── */
+    .main {
+      padding: 20px;
+      max-width: 1500px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(124, 58, 237, 0.2);
+      margin: 0 2px;
+    }
+
+    /* ── Cards Grid ──────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+
+    /* ── Prompt Card — Glassmorphism ─────────────────────── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: cardIn 0.3s ease;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      border-radius: 17px;
+      background: linear-gradient(135deg,
+        rgba(124, 58, 237, 0.0),
+        rgba(59, 130, 246, 0.0),
+        rgba(6, 182, 212, 0.0));
+      z-index: -1;
+      transition: all 0.4s;
+    }
+
+    .card:hover::before {
+      background: linear-gradient(135deg,
+        rgba(124, 58, 237, 0.2),
+        rgba(59, 130, 246, 0.15),
+        rgba(6, 182, 212, 0.2));
+      filter: blur(4px);
+    }
+
+    .card:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.12);
+      transform: translateY(-2px);
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 14px 8px;
+    }
+
+    .card-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--collision-cyan);
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    .card-badge-spacer { flex: 1; }
+
+    .card-icon-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-text);
+      transition: all 0.2s;
+      line-height: 1;
+    }
+
+    .card-icon-btn:hover { background: rgba(124, 58, 237, 0.15); color: var(--glow-white); }
+    .card-icon-btn.remove:hover { background: rgba(236, 72, 153, 0.15); color: var(--decay-pink); }
+
+    /* Textarea */
+    .card-textarea {
+      margin: 0 14px;
+      width: calc(100% - 28px);
+      min-height: 82px;
+      border: 1px solid rgba(124, 58, 237, 0.12);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      line-height: 1.55;
+      color: var(--glow-white);
+      background: rgba(10, 10, 18, 0.5);
+      resize: vertical;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .card-textarea:focus {
+      border-color: var(--higgs-violet);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12), 0 0 16px rgba(124, 58, 237, 0.08);
+      background: rgba(10, 10, 18, 0.7);
+    }
+
+    .card-textarea::placeholder { color: rgba(139, 130, 160, 0.6); }
+
+    /* Card Controls */
+    .card-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      flex-wrap: wrap;
+    }
+
+    .ratio-group { display: flex; gap: 3px; }
+
+    .ratio-pill {
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      background: transparent;
+      color: var(--muted-text);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
+    }
+
+    .ratio-pill:hover:not(.active) {
+      background: rgba(124, 58, 237, 0.1);
+      border-color: rgba(124, 58, 237, 0.25);
+      color: var(--field-text);
+    }
+
+    .ratio-pill.active {
+      background: linear-gradient(135deg, var(--higgs-violet), var(--boson-blue));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+    }
+
+    .controls-spacer { flex: 1; min-width: 4px; }
+
+    .card-model-btn {
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      background: transparent;
+      color: var(--muted-text);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .card-model-btn:hover { background: rgba(124, 58, 237, 0.1); color: var(--field-text); }
+
+    .card-model-btn.override-nb2 {
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--banana);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .card-model-btn.override-pro {
+      border-color: rgba(124, 58, 237, 0.3);
+      color: var(--higgs-violet);
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .card-gen-btn {
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: none;
+      background: linear-gradient(135deg, var(--higgs-violet), var(--boson-blue));
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-gen-btn:hover:not(:disabled) {
+      box-shadow: 0 2px 12px rgba(124, 58, 237, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .card-gen-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .card-gen-btn.generating {
+      background: linear-gradient(135deg, var(--quantum-purple), var(--collision-cyan));
+      animation: genPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes genPulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(124, 58, 237, 0.3); }
+      50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.5); }
+    }
+
+    /* ── Image Preview Area ──────────────────────────────── */
+    .card-image-area { padding: 0 14px 14px; margin-top: 6px; }
+
+    .card-image-wrap {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(18, 20, 40, 0.5);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      aspect-ratio: 1;
+    }
+
+    .card-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .card-image-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(10, 10, 18, 0.9);
+    }
+
+    .collision-loader { width: 50px; height: 50px; position: relative; }
+
+    .collision-loader .ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+    }
+
+    .collision-loader .ring:nth-child(1) {
+      border-top-color: var(--higgs-violet);
+      animation: spin 1.2s linear infinite;
+    }
+
+    .collision-loader .ring:nth-child(2) {
+      border-right-color: var(--collision-cyan);
+      animation: spin 1.8s linear infinite reverse;
+    }
+
+    .collision-loader .ring:nth-child(3) {
+      width: 70%; height: 70%; top: 15%; left: 15%;
+      border-bottom-color: var(--banana);
+      animation: spin 0.9s linear infinite;
+    }
+
+    .collision-loader .core {
+      position: absolute;
+      width: 6px; height: 6px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--glow-white);
+      box-shadow: 0 0 10px rgba(232, 228, 240, 0.5);
+      animation: corePulse 1s ease-in-out infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes corePulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.6; }
+    }
+
+    .loading-text {
+      font-size: 11px; font-weight: 600;
+      color: var(--muted-text);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    .card-image-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 8px;
+      display: flex; gap: 4px; justify-content: flex-end;
+      background: linear-gradient(transparent, rgba(10, 10, 18, 0.8));
+      opacity: 0; transition: opacity 0.2s;
+    }
+
+    .card-image-wrap:hover .card-image-overlay { opacity: 1; }
+
+    .img-action-btn {
+      width: 28px; height: 28px;
+      border-radius: 7px; border: none;
+      background: rgba(124, 58, 237, 0.3);
+      backdrop-filter: blur(8px);
+      color: #fff; font-size: 12px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .img-action-btn:hover { background: rgba(124, 58, 237, 0.6); transform: scale(1.08); }
+
+    /* ── Empty State ─────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 60px 20px; text-align: center;
+    }
+
+    .empty-state-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15), transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 16px; position: relative;
+    }
+
+    .empty-state-icon::after {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      animation: emptyRing 4s linear infinite;
+    }
+
+    @keyframes emptyRing {
+      0% { transform: rotate(0deg); border-color: rgba(124, 58, 237, 0.1); }
+      50% { border-color: rgba(6, 182, 212, 0.2); }
+      100% { transform: rotate(360deg); border-color: rgba(124, 58, 237, 0.1); }
+    }
+
+    .empty-state-title { font-size: 16px; font-weight: 700; color: var(--field-text); margin-bottom: 6px; }
+    .empty-state-sub { font-size: 13px; color: var(--muted-text); max-width: 320px; }
+
+    /* ── Bulk Import Modal ──────────────────────────────── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(10, 10, 18, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+
+    .modal-backdrop.visible { display: flex; }
+
+    .modal {
+      background: var(--nebula);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      width: 500px; max-width: 90vw;
+      padding: 24px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(124, 58, 237, 0.1);
+    }
+
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .modal-sub { font-size: 13px; color: var(--muted-text); margin-bottom: 16px; }
+
+    .modal-textarea {
+      width: 100%; min-height: 160px;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px; font-family: 'Menlo', 'Courier New', monospace;
+      line-height: 1.5;
+      color: var(--glow-white);
+      background: rgba(10, 10, 18, 0.6);
+      resize: vertical; outline: none; transition: all 0.2s;
+    }
+
+    .modal-textarea:focus {
+      border-color: var(--higgs-violet);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+
+    /* ── Status Bar ─────────────────────────────────────── */
+    .status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 32px;
+      background: rgba(10, 10, 18, 0.9);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(124, 58, 237, 0.08);
+      display: flex; align-items: center;
+      padding: 0 16px; gap: 16px;
+      z-index: 100; font-size: 11px; color: var(--muted-text);
+    }
+
+    .status-indicator { display: flex; align-items: center; gap: 5px; }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .status-dot.idle { background: var(--muted-text); }
+    .status-dot.active { background: var(--energy-teal); box-shadow: 0 0 6px rgba(20, 184, 166, 0.5); }
+
+    /* ── Scrollbar ────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(124, 58, 237, 0.35); }
+
+    .flex-1 { flex: 1; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      .header { padding: 0 12px; gap: 6px; }
+      .main { padding: 14px; }
+      .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+      .toolbar { flex-wrap: wrap; }
+    }
+
+    .mockup-label {
+      position: fixed; top: 70px; right: 16px;
+      background: linear-gradient(135deg, var(--decay-pink), var(--higgs-violet));
+      color: #fff; font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 6px;
+      z-index: 200; box-shadow: 0 2px 12px rgba(236, 72, 153, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="particle-canvas"></canvas>
+  <div class="field-overlay"></div>
+  <div class="mockup-label">Design Mockup</div>
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="header-logo-icon">&#127820;</div>
+      Nano Banana Studio
+    </div>
+    <div class="header-spacer"></div>
+    <div class="model-seg">
+      <button class="model-seg-btn active">NB2</button>
+      <button class="model-seg-btn">Pro</button>
+    </div>
+    <div class="api-key-pill" id="apiPill">
+      <span class="api-key-dot active"></span>
+      <span>API Connected</span>
+    </div>
+  </div>
+
+  <!-- ── Main ────────────────────────────────────────────── -->
+  <div class="main">
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="addCard()">+ Add Prompt</button>
+      <button class="btn btn-outline" id="importBtn">Bulk Import</button>
+      <div class="toolbar-divider"></div>
+      <button class="btn btn-generate-all" id="genAllBtn">&#9889; Generate All</button>
+      <div class="flex-1"></div>
+      <button class="btn btn-outline btn-sm">&#128230; Download ZIP</button>
+      <span style="font-size: 12px; color: var(--muted-text);" id="cardCount">3 prompts</span>
+    </div>
+
+    <div class="cards-grid" id="cardsGrid">
+
+      <!-- Card 1 — With generated image -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-badge">#01</span>
+          <div class="card-badge-spacer"></div>
+          <button class="card-icon-btn" title="Duplicate">&#x2398;</button>
+          <button class="card-icon-btn remove" title="Remove">&times;</button>
+        </div>
+        <textarea class="card-textarea" placeholder="Describe your image...">A mystical forest at twilight, bioluminescent mushrooms casting soft blue-green light on a mossy path, fireflies drifting through misty air, children's book illustration style</textarea>
+        <div class="card-controls">
+          <div class="ratio-group">
+            <button class="ratio-pill active">1:1</button>
+            <button class="ratio-pill">16:9</button>
+            <button class="ratio-pill">9:16</button>
+            <button class="ratio-pill">4:3</button>
+          </div>
+          <div class="controls-spacer"></div>
+          <button class="card-model-btn">NB2</button>
+          <button class="card-gen-btn">Generate</button>
+        </div>
+        <div class="card-image-area">
+          <div class="card-image-wrap">
+            <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #0d1b2a, #1b2838, #0d3b4e, #162447); display: flex; align-items: center; justify-content: center;">
+              <span style="font-size: 48px; opacity: 0.3;">&#127764;</span>
+            </div>
+            <div class="card-image-overlay">
+              <button class="img-action-btn" title="Redo">&#8635;</button>
+              <button class="img-action-btn" title="Download">&#8615;</button>
+              <button class="img-action-btn" title="Full Size">&#9974;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — Loading state -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-badge">#02</span>
+          <div class="card-badge-spacer"></div>
+          <button class="card-icon-btn" title="Duplicate">&#x2398;</button>
+          <button class="card-icon-btn remove" title="Remove">&times;</button>
+        </div>
+        <textarea class="card-textarea" placeholder="Describe your image...">Golden retriever puppy sitting in a meadow of wildflowers, warm afternoon sun, soft bokeh background, photorealistic, 85mm lens</textarea>
+        <div class="card-controls">
+          <div class="ratio-group">
+            <button class="ratio-pill active">1:1</button>
+            <button class="ratio-pill">16:9</button>
+            <button class="ratio-pill">9:16</button>
+            <button class="ratio-pill">4:3</button>
+          </div>
+          <div class="controls-spacer"></div>
+          <button class="card-model-btn override-pro">Pro</button>
+          <button class="card-gen-btn generating" disabled>Generating...</button>
+        </div>
+        <div class="card-image-area">
+          <div class="card-image-wrap">
+            <div class="card-image-loading">
+              <div class="collision-loader">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="core"></div>
+              </div>
+              <span class="loading-text">Colliding particles...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 — Empty / Ready -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-badge">#03</span>
+          <div class="card-badge-spacer"></div>
+          <button class="card-icon-btn" title="Duplicate">&#x2398;</button>
+          <button class="card-icon-btn remove" title="Remove">&times;</button>
+        </div>
+        <textarea class="card-textarea" placeholder="Describe your image..."></textarea>
+        <div class="card-controls">
+          <div class="ratio-group">
+            <button class="ratio-pill active">1:1</button>
+            <button class="ratio-pill">16:9</button>
+            <button class="ratio-pill">9:16</button>
+            <button class="ratio-pill">4:3</button>
+          </div>
+          <div class="controls-spacer"></div>
+          <button class="card-model-btn override-nb2">NB2</button>
+          <button class="card-gen-btn">Generate</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Bulk Import Modal ──────────────────────────────── -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-title">Bulk Import Prompts</div>
+      <div class="modal-sub">Paste a JSON array of prompt strings</div>
+      <textarea class="modal-textarea" placeholder='["prompt one", "prompt two", ...]'></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="document.getElementById('modalBackdrop').classList.remove('visible')">Cancel</button>
+        <button class="btn btn-primary">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Status Bar ──────────────────────────────────────── -->
+  <div class="status-bar">
+    <div class="status-indicator">
+      <span class="status-dot active"></span>
+      <span>Field Active</span>
+    </div>
+    <span>Model: Nano Banana 2</span>
+    <div class="flex-1"></div>
+    <span>v2.0 Higgs</span>
+  </div>
+
+  <!-- ── Particle Animation ──────────────────────────────── -->
+  <script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -999, mouseY = -999;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+
+    class Particle {
+      constructor() { this.reset(); }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.size = Math.random() * 2 + 0.5;
+        this.life = 1;
+        this.decay = Math.random() * 0.002 + 0.001;
+        const colours = [
+          [124, 58, 237], [59, 130, 246], [6, 182, 212],
+          [20, 184, 166], [245, 158, 11]
+        ];
+        const weights = [0.3, 0.25, 0.2, 0.15, 0.1];
+        let r = Math.random(), idx = 0;
+        for (let i = 0; i < weights.length; i++) {
+          r -= weights[i];
+          if (r <= 0) { idx = i; break; }
+        }
+        this.colour = colours[idx];
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        const dx = this.x - mouseX;
+        const dy = this.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          const force = (120 - dist) / 120 * 0.02;
+          this.vx += (dx / dist) * force;
+          this.vy += (dy / dist) * force;
+        }
+        this.vx *= 0.99;
+        this.vy *= 0.99;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+        this.life -= this.decay;
+        if (this.life <= 0) this.reset();
+      }
+
+      draw() {
+        const alpha = this.life * 0.35;
+        const [r, g, b] = this.colour;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        ctx.fill();
+        if (this.size > 1.2) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.15})`;
+          ctx.fill();
+        }
+      }
+    }
+
+    const particleCount = Math.min(80, Math.floor((canvas.width * canvas.height) / 18000));
+    for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            const alpha = (1 - dist / 140) * 0.08 * particles[i].life * particles[j].life;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(124, 58, 237, ${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Interactive mockup bits
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('modalBackdrop').classList.add('visible');
+    });
+    document.getElementById('modalBackdrop').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+    });
+    document.querySelectorAll('.model-seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.model-seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.card').forEach(card => {
+      card.querySelectorAll('.ratio-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          card.querySelectorAll('.ratio-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+        });
+      });
+    });
+
+    let cardNum = 3;
+    function addCard() {
+      cardNum++;
+      const grid = document.getElementById('cardsGrid');
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="card-badge">#${String(cardNum).padStart(2, '0')}</span>
+          <div class="card-badge-spacer"></div>
+          <button class="card-icon-btn" title="Duplicate">&#x2398;</button>
+          <button class="card-icon-btn remove" title="Remove" onclick="this.closest('.card').remove(); updateCount();">&times;</button>
+        </div>
+        <textarea class="card-textarea" placeholder="Describe your image..."></textarea>
+        <div class="card-controls">
+          <div class="ratio-group">
+            <button class="ratio-pill active" onclick="selectRatio(this)">1:1</button>
+            <button class="ratio-pill" onclick="selectRatio(this)">16:9</button>
+            <button class="ratio-pill" onclick="selectRatio(this)">9:16</button>
+            <button class="ratio-pill" onclick="selectRatio(this)">4:3</button>
+          </div>
+          <div class="controls-spacer"></div>
+          <button class="card-model-btn">NB2</button>
+          <button class="card-gen-btn">Generate</button>
+        </div>`;
+      grid.appendChild(card);
+      updateCount();
+      card.querySelector('.card-textarea').focus();
+    }
+
+    function selectRatio(el) {
+      el.closest('.ratio-group').querySelectorAll('.ratio-pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function updateCount() {
+      const count = document.querySelectorAll('.card').length;
+      document.getElementById('cardCount').textContent = `${count} prompt${count !== 1 ? 's' : ''}`;
+    }
+
+    document.getElementById('apiPill').addEventListener('click', () => {
+      const dot = document.querySelector('.api-key-dot');
+      dot.classList.toggle('active');
+      const label = document.querySelector('.api-key-pill span:last-child');
+      label.textContent = dot.classList.contains('active') ? 'API Connected' : 'Set API Key';
+    });
+  </script>
+</body>
+</html>
